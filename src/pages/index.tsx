@@ -1,11 +1,17 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
+import Head from 'next/head';
+import Image from 'next/image';
+import { Inter } from 'next/font/google';
+import styles from '@/styles/Home.module.css';
+import { getDAppClientInstance } from '@airgap/beacon-dapp';
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
+  const connectWallet = async () => {
+    const provider = getDAppClientInstance({ name: 'Beacon Example' });
+    const info = await provider.getActiveAccount();
+    console.log({ info });
+  };
   return (
     <>
       <Head>
@@ -16,10 +22,6 @@ export default function Home() {
       </Head>
       <main className={`${styles.main} ${inter.className}`}>
         <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>src/pages/index.tsx</code>
-          </p>
           <div>
             <a
               href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
@@ -40,14 +42,7 @@ export default function Home() {
         </div>
 
         <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
+          <button onClick={connectWallet}>Connect Wallet</button>
         </div>
 
         <div className={styles.grid}>
@@ -110,5 +105,5 @@ export default function Home() {
         </div>
       </main>
     </>
-  )
+  );
 }
