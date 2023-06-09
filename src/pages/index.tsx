@@ -2,15 +2,23 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { Inter } from 'next/font/google';
 import styles from '@/styles/Home.module.css';
-import { getDAppClientInstance } from '@airgap/beacon-dapp';
+import { NetworkType, getDAppClientInstance } from '@airgap/beacon-dapp';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
   const connectWallet = async () => {
     const provider = getDAppClientInstance({ name: 'Beacon Example' });
-    const info = await provider.getActiveAccount();
-    console.log({ info });
+    let activeAccount = await provider.getActiveAccount();
+    if (!activeAccount) {
+      await provider.requestPermissions({
+        network: {
+          type: NetworkType.MAINNET,
+        },
+      });
+      activeAccount = await provider.getActiveAccount();
+    }
+    console.log({ activeAccount });
   };
   return (
     <>
@@ -41,9 +49,8 @@ export default function Home() {
           </div>
         </div>
 
-        <div className={styles.center}>
-          <button onClick={connectWallet}>Connect Wallet</button>
-        </div>
+        <button onClick={connectWallet}>Connect Wallet</button>
+        <div className={styles.center}></div>
 
         <div className={styles.grid}>
           <a
