@@ -2,24 +2,15 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { Inter } from 'next/font/google';
 import styles from '@/styles/Home.module.css';
-import { NetworkType, getDAppClientInstance } from '@airgap/beacon-dapp';
+import { useClient, useConnect } from '@wallet01/react';
+import { BeaconConnector } from '@wallet01/tezos';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
-  const connectWallet = async () => {
-    const provider = getDAppClientInstance({ name: 'Beacon Example' });
-    let activeAccount = await provider.getActiveAccount();
-    if (!activeAccount) {
-      await provider.requestPermissions({
-        network: {
-          type: NetworkType.MAINNET,
-        },
-      });
-      activeAccount = await provider.getActiveAccount();
-    }
-    console.log({ activeAccount });
-  };
+  const { connectors } = useClient();
+  const { connect } = useConnect();
+
   return (
     <>
       <Head>
@@ -48,8 +39,11 @@ export default function Home() {
             </a>
           </div>
         </div>
-
-        <button onClick={connectWallet}>Connect Wallet</button>
+        {connectors.map((conn) => (
+          <button key={conn.name} onClick={() => connect({ connector: conn })}>
+            {conn.name}
+          </button>
+        ))}
         <div className={styles.center}></div>
 
         <div className={styles.grid}>
