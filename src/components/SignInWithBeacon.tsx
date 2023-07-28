@@ -27,19 +27,20 @@ const SignInWithBeacon = () => {
         activeConnector as BeaconConnector
       ).provider?.client.requestPermissions()
     )?.publicKey;
-
     setPubKey(publicKey);
 
     const signature = await signMessageAsync({
       message,
     });
     setSignature(signature);
+
     console.log({
       message,
       signature,
       publicKey,
       address,
     });
+
     if (!publicKey) {
       console.error('No public key found');
       return;
@@ -51,11 +52,11 @@ const SignInWithBeacon = () => {
       signature
     );
     setVerified(verified);
-    console.log('verified', verified);
   };
   return (
     <div className="flex flex-col gap-2 justify-center items-center ">
       <span className="text-white">Message: Hello World</span>
+      <span>Address: {address}</span>
 
       <button
         className="p-3 bg-blue-400 text-lg rounded-lg font-semibold"
@@ -65,7 +66,6 @@ const SignInWithBeacon = () => {
       </button>
       {hash?.length ? (
         <div className="flex flex-col items-center gap-2 font-medium text-white">
-          <span>Address: {address}</span>
           <span>Public Key: {pubKey}</span>
           <span>Hash: {hash}</span>
           <span>Signature: {signature}</span>
